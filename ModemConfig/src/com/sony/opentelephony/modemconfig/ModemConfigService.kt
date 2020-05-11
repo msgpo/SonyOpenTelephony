@@ -24,6 +24,7 @@ import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.text.TextUtils
 import android.util.Log
+import com.sony.opentelephony.modemconfig.SomcModemProperties
 import org.xmlpull.v1.XmlPullParser
 
 private const val TAG = "ModemConfigReceiver"
@@ -166,6 +167,15 @@ context.resources.getXml(R.xml.service_provider_sim_configs).use {
                         val globalTm = getSystemService(TelephonyManager::class.java)
                         val tm = globalTm!!.createForSubscriptionId(sub.subscriptionId)
                         val name = findConfigurationName(this@ModemConfigService, tm)
+                        if (name != null) {
+                            val prop = "persist.somc.cust.modem$slotIdx"
+                            Log.d(TAG, "Setting $prop to $name")
+                            when (slotIdx) {
+                                0 -> SomcModemProperties.cust_modem_0(name)
+                                1 -> SomcModemProperties.cust_modem_1(name)
+                                else -> throw Exception("Unknown slotIdx $slotIdx")
+                            }
+                        }
                     }
                 }
             }
