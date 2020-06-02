@@ -20,7 +20,6 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import android.os.SystemProperties
 import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.text.TextUtils
@@ -167,12 +166,6 @@ context.resources.getXml(R.xml.service_provider_sim_configs).use {
                         val globalTm = getSystemService(TelephonyManager::class.java)
                         val tm = globalTm!!.createForSubscriptionId(sub.subscriptionId)
                         val name = findConfigurationName(this@ModemConfigService, tm)
-
-                        if (name != null) {
-                            val prop = "persist.vendor.somc.cust.modem${sub.simSlotIndex}"
-                            if (VERBOSE) Log.v(TAG, "Setting $prop to $name")
-                            SystemProperties.set(prop, name)
-                        }
                     }
                 }
             }
